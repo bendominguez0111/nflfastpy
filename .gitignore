@@ -4,3 +4,4 @@ setup.py
 dist
 build
 nflfastpy.egg-info
+*.pyc
