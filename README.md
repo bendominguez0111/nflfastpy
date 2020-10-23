@@ -6,7 +6,7 @@ This is a Python package for easily loading nflfastR play by play data.
 
 nflfastpy is available on PyPI 
 
-    $pip install nflfast_py
+    $pip install nflfastpy
 
 nflfastpy supports Python 3.6+
 
