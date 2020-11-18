@@ -2,7 +2,9 @@ import codecs
 import numpy as np
 
 def convert_to_gsis_id(new_id):
-
+    """
+    Convert new player id columns to old gsis id
+    """
     if type(new_id) == float:
         return new_id
         
