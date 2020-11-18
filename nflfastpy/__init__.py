@@ -6,10 +6,11 @@ import tempfile
 import pyreadr
 from matplotlib import image as mpl_image
 import os
+from nflfastpy._version import __version__
 
 base_dir = os.path.dirname(__file__)
 
-default_headshot = mpl_image.imread(os.path.join(base_dir, 'images/headshot.png'))
+default_headshot = mpl_image.imread('https://raw.githubusercontent.com/fantasydatapros/nflfastpy/master/nflfastpy/images/headshot.png')
 
 def load_pbp_data(year=2020):
 
