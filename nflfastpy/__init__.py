@@ -7,6 +7,7 @@ import pyreadr
 from matplotlib import image as mpl_image
 import os
 from nflfastpy._version import __version__
+from nflfastpy import utils
 
 base_dir = os.path.dirname(__file__)
 
