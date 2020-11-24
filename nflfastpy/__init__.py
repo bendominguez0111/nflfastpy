@@ -1,17 +1,19 @@
 import pandas as pd
-from nflfastpy.config import BASE_URL, ROSTER_URL, TEAM_LOGO_URL, SCHEDULE_URL
+from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2020_URL, TEAM_LOGO_URL, SCHEDULE_URL
 from nflfastpy.errors import SeasonNotFoundError
 import requests
 import tempfile
 import pyreadr
 from matplotlib import image as mpl_image
 import os
-from nflfastpy._version import __version__
 from nflfastpy import utils
+from nflfastpy._version import __version__
 
 base_dir = os.path.dirname(__file__)
 
-default_headshot = mpl_image.imread('https://raw.githubusercontent.com/fantasydatapros/nflfastpy/master/nflfastpy/images/headshot.png')
+headshot_url = 'https://raw.githubusercontent.com/fantasydatapros/nflfastpy/master/nflfastpy/images/headshot.png'
+
+default_headshot = mpl_image.imread(headshot_url)
 
 def load_pbp_data(year=2020):
 
@@ -34,6 +36,13 @@ def load_roster_data():
     Load team roster data 1999 -> 2019
     """
     df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
+    return df
+
+def load_2020_roster_data():
+    """
+    Load 2020 roster data
+    """
+    df = pd.read_csv(ROSTER_2020_URL, low_memory=False)
     return df
 
 def load_team_logo_data():
