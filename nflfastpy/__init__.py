@@ -15,17 +15,17 @@ headshot_url = 'https://raw.githubusercontent.com/fantasydatapros/nflfastpy/mast
 
 default_headshot = mpl_image.imread(headshot_url)
 
-def load_pbp_data(year=2020):
+def load_pbp_data(year=2021):
 
     """
     Load NFL play by play data going back to 1999
     """
     
     if type(year) is not int:
-        raise TypeError('Please provide an integer between 1999 and 2020 for the year argument.')
+        raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
 
-    if year < 1999 or year > 2020:
-        raise SeasonNotFoundError('Play by play data is only available from 1999 to 2020')
+    if year < 1999 or year > 2021:
+        raise SeasonNotFoundError('Play by play data is only available from 1999 to 2021')
 
     df = pd.read_csv(BASE_URL.format(year=year), compression='gzip', low_memory=False)
 
@@ -52,15 +52,15 @@ def load_team_logo_data():
     df = pd.read_csv(TEAM_LOGO_URL)
     return df
 
-def load_schedule_data(year=2020):
+def load_schedule_data(year=2021):
     """
     Load schedule data going back to 1999
     """
 
     if type(year) is not int:
-        raise TypeError('Please provide an integer between 1999 and 2020 for the year argument.')
+        raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
 
-    if year < 1999 or year > 2020:
+    if year < 1999 or year > 2021:
         raise SeasonNotFoundError('Schedule data is only available from 1999 to 2020')
 
     url = SCHEDULE_URL.format(year=year)
