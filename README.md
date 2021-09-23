@@ -21,13 +21,13 @@ Play by play data is available going back to 1999.
 ```Python
 import nflfastpy
 
-df = nflfastpy.load_pbp_data(year=2020)
+df = nflfastpy.load_pbp_data(year=2021)
 ```
 <br>
 
 ### Loading Roster Data
 
-Roster data comes with player headshots. Rookies are not included in roster data as roster data is only available up to 2019. To account for this, a variable is available in the module called `nflfastpy.default_headshot` that is a numpy array representation of a default player headshot.
+Roster data comes with player headshots. Rookies are not included in roster data as roster data is only available up to 2021. To account for this, a variable is available in the module called `nflfastpy.default_headshot` that is a numpy array representation of a default player headshot.
 
 
 ```Python
@@ -39,10 +39,10 @@ To join roster data with play by play data, player id's in the play by play data
 
 ### Loading Schedule Data
 
-Schedule data is available from 1999 to 2020.
+Schedule data is available from 1999 to 2021.
 
 ```Python
-schedule = nflfastpy.load_schedule_data(year=2020)
+schedule = nflfastpy.load_schedule_data(year=2021)
 ```
 
 

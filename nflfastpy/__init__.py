@@ -1,5 +1,5 @@
 import pandas as pd
-from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2020_URL, TEAM_LOGO_URL, SCHEDULE_URL
+from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2021_URL, TEAM_LOGO_URL, SCHEDULE_URL
 from nflfastpy.errors import SeasonNotFoundError
 import requests
 import tempfile
@@ -31,18 +31,27 @@ def load_pbp_data(year=2021):
 
     return df
 
-def load_roster_data():
+def load_roster_data(year=2021):
     """
-    Load team roster data 1999 -> 2019
+    Load team roster data by season goin back to 1999
     """
-    df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
+
+    if type(year) is not int:
+        raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
+
+    if year < 1999 or year > 2021:
+        raise SeasonNotFoundError('Roster data is only available from 1999 to 2021')
+
+    season_roster_url = ROSTER_URL.format(year)
+    df = pd.read_csv(season_roster_url, low_memory=False)
+    
     return df
 
-def load_2020_roster_data():
+def load_2021_roster_data():
     """
-    Load 2020 roster data
+    Load 2021 roster data
     """
-    df = pd.read_csv(ROSTER_2020_URL, low_memory=False)
+    df = pd.read_csv(ROSTER_2021_URL, low_memory=False)
     return df
 
 def load_team_logo_data():
@@ -61,7 +70,7 @@ def load_schedule_data(year=2021):
         raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
 
     if year < 1999 or year > 2021:
-        raise SeasonNotFoundError('Schedule data is only available from 1999 to 2020')
+        raise SeasonNotFoundError('Schedule data is only available from 1999 to 2021')
 
     url = SCHEDULE_URL.format(year=year)
     res = requests.get(url)
