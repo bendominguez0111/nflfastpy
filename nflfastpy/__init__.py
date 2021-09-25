@@ -1,6 +1,7 @@
 import pandas as pd
 from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2021_URL, TEAM_LOGO_URL, SCHEDULE_URL
 from nflfastpy.errors import SeasonNotFoundError
+from nflfastpy.utils import agg_stats
 import requests
 import tempfile
 import pyreadr
@@ -82,6 +83,18 @@ def load_schedule_data(year=2021):
     df = schedule_data[None]
 
     return df
+
+def aggregate_stats(pbp, by_team=True):
+    """
+    TODO: fill in des here
+    """
+
+    out_df = agg_stats(pbp)
+
+    return out_df
+
+
+
 
 
 
