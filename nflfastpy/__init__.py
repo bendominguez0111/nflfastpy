@@ -1,5 +1,5 @@
 import pandas as pd
-from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2021_URL, TEAM_LOGO_URL, SCHEDULE_URL
+from nflfastpy.config import BASE_URL, ROSTER_URL, TEAM_LOGO_URL, SCHEDULE_URL
 from nflfastpy.errors import SeasonNotFoundError
 from nflfastpy.utils import agg_stats
 import requests
@@ -34,7 +34,8 @@ def load_pbp_data(year=2021):
 
 def load_roster_data(year=2021):
     """
-    Load team roster data by season goin back to 1999
+    load NFL roster data by season going back to 1999. Default=2021 season
+    Output: dataframe w/ player by player information (name, team, position, gsis_id)
     """
 
     if type(year) is not int:
@@ -43,17 +44,12 @@ def load_roster_data(year=2021):
     if year < 1999 or year > 2021:
         raise SeasonNotFoundError('Roster data is only available from 1999 to 2021')
 
-    season_roster_url = ROSTER_URL.format(year)
-    df = pd.read_csv(season_roster_url, low_memory=False)
+    # import nflverse roster file     
+    roster_df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
+    # filter roster for season
+    season_roster_df = roster_df[roster_df.season == year]
     
-    return df
-
-def load_2021_roster_data():
-    """
-    Load 2021 roster data
-    """
-    df = pd.read_csv(ROSTER_2021_URL, low_memory=False)
-    return df
+    return season_roster_df
 
 def load_team_logo_data():
     """
@@ -89,6 +85,6 @@ def aggregate_stats(pbp, by_team=True):
     TODO: fill in des here
     """
 
-    out_df = agg_stats(pbp)
+    pass_stats_df, rush_stats_df, receiving_stats_df = agg_stats(pbp)
 
-    return out_df
+    return pass_stats_df, rush_stats_df, receiving_stats_df

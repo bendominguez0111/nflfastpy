@@ -21,25 +21,6 @@ def agg_stats(pbp, by_team=True):
 
     #####  https://github.com/nflverse/nflfastR/blob/master/R/aggregate_game_stats.R
 
-    #     #rushing_yards
-
-    #     - carries
-    #     - rushing yards
-    #     - rushing tds
-    #     - rushing fumbles
-    #     - rushing fumbles lost
-    #     - rushing epa
-
-    #     # receptions
-
-    #     - targets
-    #     - receiving yards
-    #     - receving tds
-    #     - r air yards
-    #     - r yac
-    #     - r fumbles
-    #     - r fumbles lost        -
-
     ## filter to regular season games
     ## TODO: function argument to allow for postseason play
 
@@ -62,7 +43,7 @@ def agg_stats(pbp, by_team=True):
 
     pass_pbp_df['sack_fumbles_lost'] = sack_fumbles
     pass_pbp_df['sack_yards'] = sack_yards_lost
-
+  
     ## TODO: function argument to allow for grouping by player
     ## if by_team = False: .groupby(player_id)
     ## will require a player id -> name reindex
@@ -74,7 +55,7 @@ def agg_stats(pbp, by_team=True):
     pass_stats_df = pass_pbp_df.groupby(['posteam']).agg(stat_agg_func(passing_stats_to_aggregate))
 
     pass_stats_df.rename(columns={'sack': 'sacks_taken', 'pass_attempt': 'drop_backs', 'complete_pass': 'completions',
-                                  'incomplete_pass': 'incompletions', 'first_down_pass': 'pass_first_down', 'pass_touchdown': 'passing_tds'},
+                                  'incomplete_pass': 'incompletions', 'first_down_pass': 'passing_first_downs', 'pass_touchdown': 'passing_tds'},
                                   inplace=True)
     
     pass_stats_df['pass_attempts'] = pass_stats_df.drop_backs - pass_stats_df.sacks_taken
@@ -120,22 +101,39 @@ def agg_stats(pbp, by_team=True):
 
 
     ## list of pbp stats to sum
-    rushing_stats_to_aggregate = ['rushing_yards', 'rush_attempt', 'rush_touchdown', 'fumble', 'fumble_lost', 'first_down_rush', 'epa', 'rush_left', 'rush_middle', 'rush_right', 'run_end', 'run_guard', 'run_tackle']
+    rushing_stats_to_aggregate = ['rushing_yards', 'rush_attempt', 'rush_touchdown', 'fumble',
+    'fumble_lost', 'first_down_rush', 'epa', 'rush_left', 'rush_middle', 'rush_right', 'run_end', 'run_guard', 'run_tackle']
 
-    rush_stats_df = rush_pbp_df.groupby(['posteam']).agg(stat_agg_func(rushing_stats_to_aggregate))   
+    rush_stats_df = rush_pbp_df.groupby(['posteam']).agg(stat_agg_func(rushing_stats_to_aggregate))
+
+    rush_stats_df.rename(columns={'rush_attempt': 'carries', 'rush_touchdown': 'rushing_tds', 'fumble': 'fumbles', 
+        'fumble_lost': 'fumbles_lost', 'first_down_rush': 'rushing_first_downs', 'epa': 'rushing_epa'}, inplace=True)   
 
     # TODO: laterals (lol)
 
     ####### RECIVING STATS
-    ## TODO
+
+    # receiving df 1: primary reciver
+
+    # from pbp_df take only passing plays:
+
+    receiving_pbp_df = pbp_df[(pbp_df['play_type_nfl'] == 'PASS')]
+
+    receiving_stats_to_aggregate = ['receiving_yards', 'complete_pass', 'pass_touchdown', 'fumble', 'fumble_lost',
+                                    'air_yards', 'yards_after_catch', 'first_down_pass', 'epa']
+
+    receiving_stats_df = receiving_pbp_df.groupby(['posteam']).agg(stat_agg_func(receiving_stats_to_aggregate))
+
+    receiving_stats_df.rename(columns={'complete_pass': 'receptions', 'pass_touchdown': 'receving_td', 'fumble_lost': 'fumbles_lost',
+                                        'first_down_pass': 'reciving_first_down', 'epa': 'receiving_epa'}, inplace=True)
+
     ####### SPECIAL TEAMS STATS
     ## TODO
     
     ####### MERGE STAT DFs
     ## TODO
 
-    return rush_stats_df # returning rushing stats for now
-
+    return pass_stats_df, rush_stats_df, receiving_stats_df # now returning 3 df's
 
 ####### HELPER FUNCTIONS
 # functions in this section are applied to df's to help calculate stats
@@ -188,11 +186,11 @@ def if_run_guard(run_location):
     else:
         return 0
 
+def if_run_tackle(run_location):
     if (run_location == "tackle"):
         return 1
     else:
         return 0
-
 
 # this function takes a list of stats to be summed & returns a dict that can be read by pd.groupby.agg()
 # useful for counting stats (yards, epa, and binary play events (TDs, Fumbles, Sacks))
