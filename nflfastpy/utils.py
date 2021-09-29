@@ -129,14 +129,78 @@ def agg_stats(pbp, by_team=True):
 
     ####### SPECIAL TEAMS STATS
     ## TODO
+
+    ####### TWO POINT CONVERSIONS
     
+
+    two_point_pbp_df = pbp_df[(pbp_df['two_point_attempt'] == 1)]
+
+    two_point_rush_attempt = two_point_pbp_df.apply(
+        lambda row: if_two_point_run(row['rusher_player_id']), axis=1).copy()
+    two_point_pass_attempt = two_point_pbp_df.apply(
+        lambda row: if_two_point_pass(row['passer_player_id']), axis=1).copy()
+    two_point_success = two_point_pbp_df.apply(
+        lambda row: if_two_point_success(row['two_point_conv_result']), axis=1).copy()
+
+    two_point_pbp_df['two_point_rush_attempt'] = two_point_rush_attempt
+    two_point_pbp_df['two_point_pass_attempt'] = two_point_pass_attempt
+    two_point_pbp_df['two_point_success'] = two_point_success
+
+    two_point_rush_conv = two_point_pbp_df.apply(
+        lambda row: if_two_point_rush_conv(row['two_point_success'], row['two_point_rush_attempt']), axis=1).copy()
+
+    two_point_pass_conv = two_point_pbp_df.apply(
+        lambda row: if_two_point_pass_conv(row['two_point_success'], row['two_point_pass_attempt']), axis=1).copy()
+
+    two_point_pbp_df['two_point_rush_conv'] = two_point_rush_conv
+    two_point_pbp_df['two_point_pass_conv'] = two_point_pass_conv
+
+    two_point_stats_to_aggregate = ['two_point_attempt', 'two_point_rush_attempt', 'two_point_pass_attempt', 'two_point_success', 'two_point_rush_conv', 'two_point_pass_conv']
+
+    two_point_stats_df = two_point_pbp_df.groupby(['posteam']).agg(stat_agg_func(two_point_stats_to_aggregate))
+
+
+    two_point_stats_df['two_point_conv_rate'] = two_point_stats_df.two_point_success / two_point_stats_df.two_point_attempt
+
     ####### MERGE STAT DFs
     ## TODO
 
-    return pass_stats_df, rush_stats_df, receiving_stats_df # now returning 3 df's
+    return pass_stats_df, rush_stats_df, receiving_stats_df, two_point_stats_df # now returning 4 df's
 
 ####### HELPER FUNCTIONS
 # functions in this section are applied to df's to help calculate stats
+
+## binary counters for two point plays
+# if two point rush
+def if_two_point_run(runner_id):
+    if (runner_id == ''):
+        return 0
+    else:
+        return 1
+# if two point pass
+def if_two_point_pass(passer_id):
+    if (passer_id == ''):
+        return 0
+    else:
+        return 1
+# if two point success
+def if_two_point_success(play_result):
+    if(play_result == 'failure'):
+        return 0
+    else:
+        return 1
+# if two point rush success
+def if_two_point_rush_conv(play_result, rush_status):
+    if((play_result == 1) & (rush_status == 1)):
+        return 1
+    else: 
+        return 0
+# if two point pass success
+def if_two_point_pass_conv(play_result, pass_status):
+    if((play_result == 1) & (pass_status == 1)):
+        return 1
+    else: 
+        return 0
 
 # helper function to calculate if there was a sack + fumble on pbp data
 def sack_fumble_calculator(sack, fumble):

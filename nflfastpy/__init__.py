@@ -85,6 +85,6 @@ def aggregate_stats(pbp, by_team=True):
     TODO: fill in des here
     """
 
-    pass_stats_df, rush_stats_df, receiving_stats_df = agg_stats(pbp)
+    pass_stats_df, rush_stats_df, receiving_stats_df, two_point_stats_df = agg_stats(pbp)
 
-    return pass_stats_df, rush_stats_df, receiving_stats_df
+    return pass_stats_df, rush_stats_df, receiving_stats_df, two_point_stats_df
