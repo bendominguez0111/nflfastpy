@@ -5,3 +5,5 @@ dist
 build
 nflfastpy.egg-info
 *.pyc
+.DS_Store
+/.idea

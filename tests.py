@@ -9,7 +9,7 @@ class TestAllFunctions(unittest.TestCase):
 
         version = nflfastpy.__version__
 
-        df = nflfastpy.load_pbp_data(2020)
+        df = nflfastpy.load_pbp_data(2021)
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
@@ -17,7 +17,7 @@ class TestAllFunctions(unittest.TestCase):
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
-        df = nflfastpy.load_2020_roster_data()
+        df = nflfastpy.load_2021_roster_data()
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
@@ -25,7 +25,7 @@ class TestAllFunctions(unittest.TestCase):
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
-        df = nflfastpy.load_schedule_data(2020)
+        df = nflfastpy.load_schedule_data(2021)
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 

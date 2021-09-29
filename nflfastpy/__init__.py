@@ -1,6 +1,7 @@
 import pandas as pd
-from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2020_URL, TEAM_LOGO_URL, SCHEDULE_URL
+from nflfastpy.config import BASE_URL, ROSTER_URL, TEAM_LOGO_URL, SCHEDULE_URL
 from nflfastpy.errors import SeasonNotFoundError
+from nflfastpy.utils import agg_stats
 import requests
 import tempfile
 import pyreadr
@@ -31,19 +32,24 @@ def load_pbp_data(year=2021):
 
     return df
 
-def load_roster_data():
+def load_roster_data(year=2021):
     """
-    Load team roster data 1999 -> 2019
+    load NFL roster data by season going back to 1999. Default=2021 season
+    Output: dataframe w/ player by player information (name, team, position, gsis_id)
     """
-    df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
-    return df
 
-def load_2020_roster_data():
-    """
-    Load 2020 roster data
-    """
-    df = pd.read_csv(ROSTER_2020_URL, low_memory=False)
-    return df
+    if type(year) is not int:
+        raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
+
+    if year < 1999 or year > 2021:
+        raise SeasonNotFoundError('Roster data is only available from 1999 to 2021')
+
+    # import nflverse roster file     
+    roster_df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
+    # filter roster for season
+    season_roster_df = roster_df[roster_df.season == year]
+    
+    return season_roster_df
 
 def load_team_logo_data():
     """
@@ -61,7 +67,7 @@ def load_schedule_data(year=2021):
         raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
 
     if year < 1999 or year > 2021:
-        raise SeasonNotFoundError('Schedule data is only available from 1999 to 2020')
+        raise SeasonNotFoundError('Schedule data is only available from 1999 to 2021')
 
     url = SCHEDULE_URL.format(year=year)
     res = requests.get(url)
@@ -74,5 +80,11 @@ def load_schedule_data(year=2021):
 
     return df
 
+def aggregate_stats(pbp, by_team=True):
+    """
+    TODO: fill in des here
+    """
 
+    pass_stats_df, rush_stats_df, receiving_stats_df, two_point_stats_df = agg_stats(pbp)
 
+    return pass_stats_df, rush_stats_df, receiving_stats_df, two_point_stats_df
