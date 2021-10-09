@@ -1,5 +1,5 @@
 import pandas as pd
-from nflfastpy.config import BASE_URL, ROSTER_URL, ROSTER_2020_URL, TEAM_LOGO_URL, SCHEDULE_URL
+from nflfastpy.config import BASE_URL, ROSTER_URL, TEAM_LOGO_URL, SCHEDULE_URL, DEPTH_CHART_URL, INJURY_URL
 from nflfastpy.errors import SeasonNotFoundError
 import requests
 import tempfile
@@ -20,7 +20,7 @@ def load_pbp_data(year=2021):
     """
     Load NFL play by play data going back to 1999
     """
-    
+
     if type(year) is not int:
         raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
 
@@ -31,19 +31,47 @@ def load_pbp_data(year=2021):
 
     return df
 
-def load_roster_data():
+def load_roster_data(year):
     """
-    Load team roster data 1999 -> 2019
+    Load team roster data 1999 -> 2021
     """
-    df = pd.read_csv(ROSTER_URL, compression='gzip', low_memory=False)
+    if type(year) is not int:
+        raise TypeError('Please provide an integer between 1999 and 2021 for the year argument.')
+
+    if year < 1999 or year > 2021:
+        raise SeasonNotFoundError('Roster data is only available from 1999 to 2021')
+
+    df = pd.read_csv(ROSTER_URL.format(year=year), low_memory=False)
     return df
 
-def load_2020_roster_data():
+
+def load_depth_chart_data(year):
     """
-    Load 2020 roster data
+    Load team depth chart data 2001 -> 2021
     """
-    df = pd.read_csv(ROSTER_2020_URL, low_memory=False)
+    if type(year) is not int:
+        raise TypeError('Please provide an integer between 2001 and 2021 for the year argument.')
+
+    if year < 2009 or year > 2021:
+        raise SeasonNotFoundError('Depth Chart data is only available from 2001 to 2021')
+
+    df = pd.read_csv(DEPTH_CHART_URL.format(year=year), compression='gzip', low_memory=False)
     return df
+
+
+def load_injury_data(year):
+    """
+    Load team injury data 2009 -> 2021
+    """
+    if type(year) is not int:
+        raise TypeError('Please provide an integer between 2001 and 2021 for the year argument.')
+
+    if year < 2009 or year > 2021:
+        raise SeasonNotFoundError('Injury data is only available from 2009 to 2021')
+
+    df = pd.read_csv(INJURY_URL.format(year=year), compression='gzip', low_memory=False)
+    return df
+
 
 def load_team_logo_data():
     """
@@ -73,6 +101,3 @@ def load_schedule_data(year=2021):
     df = schedule_data[None]
 
     return df
-
-
-

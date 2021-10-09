@@ -13,19 +13,23 @@ class TestAllFunctions(unittest.TestCase):
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
-        df = nflfastpy.load_roster_data()
-        self.assertEqual(type(df), pd.DataFrame)
-        self.assertFalse(df.empty)
-
-        df = nflfastpy.load_2020_roster_data()
-        self.assertEqual(type(df), pd.DataFrame)
-        self.assertFalse(df.empty)
-
         df = nflfastpy.load_team_logo_data()
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
         df = nflfastpy.load_schedule_data(2020)
+        self.assertEqual(type(df), pd.DataFrame)
+        self.assertFalse(df.empty)
+
+        df = nflfastpy.load_roster_data(2020)
+        self.assertEqual(type(df), pd.DataFrame)
+        self.assertFalse(df.empty)
+
+        df = nflfastpy.load_depth_chart_data(2020)
+        self.assertEqual(type(df), pd.DataFrame)
+        self.assertFalse(df.empty)
+
+        df = nflfastpy.load_injury_data(2020)
         self.assertEqual(type(df), pd.DataFrame)
         self.assertFalse(df.empty)
 
